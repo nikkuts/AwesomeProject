@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableWithoutFeedback,
+  Keyboard } from 'react-native';
 import { useFonts } from 'expo-font';
 import RegistrationScreen from './Screens/RegistrationScreen';
 
@@ -9,21 +9,25 @@ export default function App() {
     'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
   });
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <ImageBackground style={styles.image}
-        source={require("./assets/bg.png")}>
-        <RegistrationScreen/>
-        <StatusBar style="auto" />
-      </ImageBackground>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground style={styles.image}
+          source={require("./assets/bg.png")}>
+          <RegistrationScreen/>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback> 
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
