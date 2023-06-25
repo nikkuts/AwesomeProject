@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableWithoutFeedback,
-  Keyboard } from 'react-native';
+import { StyleSheet, View, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useFonts } from 'expo-font';
 import RegistrationScreen from './Screens/RegistrationScreen';
 
@@ -17,13 +16,14 @@ export default function App() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <ImageBackground style={styles.image}
-          source={require("./assets/bg.png")}>
+          source={require("./assets/bg.png")}
+        >
           <RegistrationScreen/>
         </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback> 
+      </View>       
+    </TouchableWithoutFeedback>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -37,5 +37,5 @@ const styles = StyleSheet.create({
     width: '100%',
     resizeMode: "cover",
     justifyContent: 'center',
-  },
+  }
 });
