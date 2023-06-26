@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity} from 'react-native';
 
-const RegistrationScreen = () => {
-  const [login, setLogin] = useState('');
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isAvatar, setIsAvatar] = useState(false);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -21,15 +19,7 @@ const RegistrationScreen = () => {
     setShowPassword(!showPassword);
   };
 
-  const onLoadAvatar = () => {
-    setIsAvatar(true);
-  };
-
-  const onDeleteAvatar = () => {
-    setIsAvatar(false);
-  };
-
-  const onRegister = () => {
+  const onLogin = () => {
 
   };
 
@@ -42,36 +32,8 @@ const RegistrationScreen = () => {
         <ImageBackground style={styles.image}
           source={require("../assets/bg.png")}
         >
-          <SafeAreaView style={{...styles.form, height: !isFocused ? 549 : 374}}>  
-            {!isAvatar ?
-              <View style={{...styles.avatar, backgroundColor: '#F6F6F6'}}>
-                <TouchableOpacity style={styles.btnAvatar} onPress={onLoadAvatar}>
-                  <Image 
-                  source={require('../assets/add.png')}
-                  />
-                </TouchableOpacity>
-              </View>
-              :
-              <ImageBackground style={styles.avatar} 
-              source={require('../assets/rectangle.png')} 
-              >
-                <TouchableOpacity style={styles.btnAvatar} onPress={onDeleteAvatar}>
-                  <Image 
-                  source={require('../assets/delete.png')}
-                  />
-                </TouchableOpacity>
-              </ImageBackground>
-            }
-            <Text style={styles.title}>Реєстрація</Text>
-              <TextInput
-                style={[styles.input, isFocused && styles.inputFocused]}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onChangeText={setLogin}
-                value={login}
-                placeholder="Логін"
-                placeholderTextColor='#BDBDBD'
-              />
+          <SafeAreaView style={{...styles.form, height: !isFocused ? 489 : 248}}>  
+            <Text style={styles.title}>Увійти</Text>
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
                 onFocus={handleFocus}
@@ -99,11 +61,11 @@ const RegistrationScreen = () => {
               </TouchableOpacity>
               {!isFocused && 
               <>
-                <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onRegister}>
-                  <Text style={styles.btnTitle}>Зареєструватися</Text>
+                <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onLogin}>
+                  <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
                 <TouchableOpacity >
-                  <Text style={styles.question}>Вже є акаунт? Увійти</Text>
+                  <Text style={styles.question}>Немає акаунту? Зареєструватися</Text>
                 </TouchableOpacity>
                 <View style={styles.indicator}></View>
               </> 
@@ -132,28 +94,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    paddingTop: 92,
+    paddingTop: 32,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-  },
-  avatar: {
-    position: "absolute",
-    top: -60,
-    left: '50%',
-    transform: [{ translateX: -50 }],
-    width: 120,
-    height: 120,
-    borderRadius: 16,
-  },
-  btnAvatar: {
-    position: 'absolute',
-    left: 107,
-    top: 78,
-    width: 25,
-    height: 25,
   },
   title: {
     marginBottom: 16,
@@ -224,4 +170,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RegistrationScreen;
+export default LoginScreen;
