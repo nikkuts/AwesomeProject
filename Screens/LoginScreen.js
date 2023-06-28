@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isKeyboard, setIsKeyboard] = useState(false);
+
+  const KeyboardHide = () => {
+    setIsKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -20,11 +28,31 @@ const LoginScreen = () => {
   };
 
   const onLogin = () => {
-
+    const state = {
+      email: email,
+      password: password,
+    };
+    console.log(state);
+    setEmail('');
+    setPassword('');
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboard(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboard(false);
+    });
+  
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={KeyboardHide}>
       <KeyboardAvoidingView 
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={styles.container}
@@ -32,7 +60,7 @@ const LoginScreen = () => {
         <ImageBackground style={styles.image}
           source={require("../assets/bg.png")}
         >
-          <SafeAreaView style={{...styles.form, height: !isFocused ? 489 : 248}}>  
+          <SafeAreaView style={styles.form}>  
             <Text style={styles.title}>Увійти</Text>
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
@@ -59,14 +87,24 @@ const LoginScreen = () => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              {!isFocused && 
+              {!isKeyboard && 
               <>
                 <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onLogin}>
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
-                <TouchableOpacity >
-                  <Text style={styles.question}>Немає акаунту? Зареєструватися</Text>
-                </TouchableOpacity>
+                <View style={styles.changeScreen}>
+                  <View>
+                    <Text style={styles.question}>
+                    Немає акаунту? 
+                    </Text>
+                  </View>
+                  <TouchableOpacity >
+                    <Text onPress={() => navigation.navigate("Registration")}
+                      style={{...styles.question, textDecorationLine: 'underline'} }>
+                      Зареєструватися
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={styles.indicator}></View>
               </> 
               }
@@ -94,6 +132,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    height: 489,
     paddingTop: 32,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
@@ -149,11 +188,14 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: '#FFFFFF',
   },
-  question: {
+  changeScreen: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    gap: 4,
     marginTop: 16,
-    textAlign: 'center',
-    fontFamily: 'Roboto-Regular',
-    color: '#1B4371',
+  },
+  question: {
     fontFamily: 'Roboto-Regular',
     color: '#1B4371',
     fontSize: 16,

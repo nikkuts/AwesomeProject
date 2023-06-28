@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const RegistrationScreen = () => {
+  const navigation = useNavigation();
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isAvatar, setIsAvatar] = useState(false);
+  const [isKeyboard, setIsKeyboard] = useState(false);
+
+  const KeyboardHide = () => {
+    setIsKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -30,11 +38,33 @@ const RegistrationScreen = () => {
   };
 
   const onRegister = () => {
-
+    const state = {
+      login: login,
+      email: email,
+      password: password,
+    };
+    console.log(state);
+    setLogin('');
+    setEmail('');
+    setPassword('');
   };
 
+useEffect(() => {
+  const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+    setIsKeyboard(true);
+  });
+  const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+    setIsKeyboard(false);
+  });
+
+  return () => {
+    showSubscription.remove();
+    hideSubscription.remove();
+  };
+}, []);
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={KeyboardHide}>
       <KeyboardAvoidingView 
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={styles.container}
@@ -42,7 +72,7 @@ const RegistrationScreen = () => {
         <ImageBackground style={styles.image}
           source={require("../assets/bg.png")}
         >
-          <SafeAreaView style={{...styles.form, height: !isFocused ? 549 : 374}}>  
+          <SafeAreaView style={styles.form}>  
             {!isAvatar ?
               <View style={{...styles.avatar, backgroundColor: '#F6F6F6'}}>
                 <TouchableOpacity style={styles.btnAvatar} onPress={onLoadAvatar}>
@@ -97,14 +127,24 @@ const RegistrationScreen = () => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              {!isFocused && 
+              {!isKeyboard && 
               <>
                 <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onRegister}>
                   <Text style={styles.btnTitle}>Зареєструватися</Text>
                 </TouchableOpacity>
-                <TouchableOpacity >
-                  <Text style={styles.question}>Вже є акаунт? Увійти</Text>
-                </TouchableOpacity>
+                <View style={styles.changeScreen}>
+                  <View>
+                    <Text style={styles.question}>
+                      Вже є акаунт? 
+                    </Text>
+                  </View>
+                  <TouchableOpacity >
+                    <Text onPress={() => navigation.navigate("Login")}
+                      style={{...styles.question, textDecorationLine: 'underline'} }>
+                      Увійти
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={styles.indicator}></View>
               </> 
               }
@@ -132,6 +172,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    height: 549,
     paddingTop: 92,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
@@ -203,11 +244,14 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: '#FFFFFF',
   },
-  question: {
+  changeScreen: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    gap: 4,
     marginTop: 16,
-    textAlign: 'center',
-    fontFamily: 'Roboto-Regular',
-    color: '#1B4371',
+  },
+  question: {
     fontFamily: 'Roboto-Regular',
     color: '#1B4371',
     fontSize: 16,
