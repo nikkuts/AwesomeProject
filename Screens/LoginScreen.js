@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity} from 'react-native';
+import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
@@ -28,13 +28,22 @@ const LoginScreen = () => {
   };
 
   const onLogin = () => {
-    const state = {
-      email: email,
-      password: password,
-    };
-    console.log(state);
-    setEmail('');
-    setPassword('');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailRegex.test(email)) {
+      const state = {
+        email: email,
+        password: password,
+      };
+      console.log(state);
+      setEmail('');
+      setPassword('');
+
+      navigation.navigate('Home');
+    } 
+    else {
+      Alert.alert('Помилка', 'Введіть дійсну електронну пошту.');
+    }
   };
 
   useEffect(() => {
@@ -118,6 +127,7 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,7 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     resizeMode: "cover",
-    justifyContent: 'center',
+    justifyContent: 'center', 
   },
   form: {
     position: 'absolute',

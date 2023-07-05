@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity} from 'react-native';
+import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const RegistrationScreen = () => {
@@ -38,15 +38,24 @@ const RegistrationScreen = () => {
   };
 
   const onRegister = () => {
-    const state = {
-      login: login,
-      email: email,
-      password: password,
-    };
-    console.log(state);
-    setLogin('');
-    setEmail('');
-    setPassword('');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailRegex.test(email)) {
+      const state = {
+        login: login,
+        email: email,
+        password: password,
+      };
+      console.log(state);
+      setLogin('');
+      setEmail('');
+      setPassword('');
+    
+      navigation.navigate('Home');
+    } 
+    else {
+      Alert.alert('Помилка', 'Введіть дійсну електронну пошту.');
+    }
   };
 
 useEffect(() => {
