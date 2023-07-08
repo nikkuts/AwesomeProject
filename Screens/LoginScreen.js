@@ -96,7 +96,6 @@ const LoginScreen = () => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              {!isKeyboard && 
               <>
                 <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onLogin}>
                   <Text style={styles.btnTitle}>Увійти</Text>
@@ -114,6 +113,9 @@ const LoginScreen = () => {
                     </Text>
                   </TouchableOpacity>
                 </View>
+              </>
+              {!isKeyboard && 
+              <>
                 <View style={styles.indicator}></View>
               </> 
               }

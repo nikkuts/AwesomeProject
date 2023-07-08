@@ -136,7 +136,6 @@ useEffect(() => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              {!isKeyboard && 
               <>
                 <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onRegister}>
                   <Text style={styles.btnTitle}>Зареєструватися</Text>
@@ -154,6 +153,9 @@ useEffect(() => {
                     </Text>
                   </TouchableOpacity>
                 </View>
+              </> 
+              {!isKeyboard && 
+              <>
                 <View style={styles.indicator}></View>
               </> 
               }
