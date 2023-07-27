@@ -40,6 +40,7 @@ const PostsScreen = () => {
           headerTitleAlign: 'center',
           headerLeftContainerStyle: {paddingHorizontal: 16},
           headerRightContainerStyle: {paddingHorizontal: 16},
+          headerLeft: () => null,
           headerRight: LogoutButton, 
         }}
       />

@@ -54,7 +54,8 @@ const Home = () => {
           }}
         />
         <MainTab.Screen name="CreatePosts" component={CreatePostsScreen}
-          options={{tabBarButton: CustomButton,
+          options={{
+            tabBarButton: CustomButton,
             headerTitle: 'Створити публікацію',
             headerTitleAlign: 'center',
             headerLeftContainerStyle: {paddingHorizontal: 16},

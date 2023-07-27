@@ -13,6 +13,15 @@ const DefaultScreenPosts = ({route, navigation}) => {
   return (
     <>
     <View style={styles.container}>
+      <View style={styles.user}>
+        <Image style={styles.avatar} 
+          source={require('../../assets/rectangle2.png')}
+        />
+        <View>
+          <Text style={styles.userName}>Name</Text>
+          <Text style={styles.userEmail}>email</Text>
+        </View>
+      </View>
       <FlatList
         data={posts}
         keyExtractor={(item, indx) => indx.toString()}
@@ -71,6 +80,29 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     backgroundColor: '#ffffff',
+  },
+  user: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 32,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+  },
+  userName: {
+    fontFamily: 'Roboto-Medium',
+    color: '#212121',
+    fontSize: 13,
+    lineHeight: 16,
+  },
+  userEmail: {
+    fontFamily: 'Roboto-Regular',
+    color: '#212121',
+    fontSize: 11,
+    lineHeight: 13,
   },
   photoView: {
     marginTop: 32,
