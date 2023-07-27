@@ -21,14 +21,14 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <AuthStack.Navigator initialRouteName="Login">
+      <AuthStack.Navigator initialRouteName="Home">
           <AuthStack.Screen options={{ headerShown: false, }}
           name="Login" component={LoginScreen} />
           <AuthStack.Screen options={{ headerShown: false, }} 
           name="Registration" component={RegistrationScreen} />
           <AuthStack.Screen options={{ headerShown: false, }}
           name="Home" component={Home} />
-        </AuthStack.Navigator>
+      </AuthStack.Navigator>
     </NavigationContainer>
   );
 };

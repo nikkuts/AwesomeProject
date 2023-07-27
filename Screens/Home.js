@@ -25,16 +25,6 @@ const Home = () => {
             </TouchableOpacity>
   );
 
-  const LogoutButton = () => (
-              <TouchableOpacity onPress={() => navigation.navigate("Login")}
-              >
-                <Image
-                source={require('../assets/logout.png')}
-                style={{ width: 24, height: 24 }}
-                />
-              </TouchableOpacity>
-  );
-
   const BackButton = () => (
     <TouchableOpacity onPress={() => navigation.navigate("Posts")}
     >
@@ -60,11 +50,7 @@ const Home = () => {
                 style={{ width: 40, height: 40 }}
               />
             ), 
-            headerTitle: 'Публікації',
-            headerTitleAlign: 'center',
-            headerLeftContainerStyle: {paddingHorizontal: 16},
-            headerRightContainerStyle: {paddingHorizontal: 16},
-            headerRight: LogoutButton,
+            headerShown: false,
           }}
         />
         <MainTab.Screen name="CreatePosts" component={CreatePostsScreen}
@@ -73,6 +59,7 @@ const Home = () => {
             headerTitleAlign: 'center',
             headerLeftContainerStyle: {paddingHorizontal: 16},
             headerRightContainerStyle: {paddingHorizontal: 16},
+            tabBarStyle: { display: 'none' },
             headerLeft: BackButton,
           }} 
         />
