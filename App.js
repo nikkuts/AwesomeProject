@@ -21,7 +21,7 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <AuthStack.Navigator initialRouteName="Home">
+      <AuthStack.Navigator initialRouteName="Login">
           <AuthStack.Screen options={{ headerShown: false, }}
           name="Login" component={LoginScreen} />
           <AuthStack.Screen options={{ headerShown: false, }} 
