@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Text, View, ScrollView, TouchableOpacity, StyleSheet, Image, TextInput, SafeAreaView } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { useNavigation } from '@react-navigation/native';
+import { db, storage } from "../firebase/config";
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import { collection, addDoc } from "firebase/firestore";
 
 const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -16,6 +20,8 @@ const CreatePostsScreen = () => {
   const [latitude,setLatitude] = useState(null);
   const [longitude,setLongitude] = useState(null);
   const [isKeyboard, setIsKeyboard] = useState(false);
+
+  const {userId, displayName} = useSelector((state) => state.auth);
 
   const KeyboardHide = () => {
     setIsKeyboard(false);
@@ -32,13 +38,52 @@ const CreatePostsScreen = () => {
 
   const onPublic = () => {
     if (photo) {
-      navigation.navigate('DefaultScreen', {photo, name, locality, latitude, longitude});
+      uploadPostToServer();
+      navigation.navigate('DefaultScreen');
       setName('');
       setLocality('');
       setLatitude(null);
       setLongitude(null);
       setPhoto(null);
     } 
+  };
+
+  const uploadPhotoToServer = async () => {
+    try {   
+      const response = await fetch(photo);
+      const blob = await response.blob();
+
+      const uniquePostId = Date.now().toString();
+      const storageRef = ref(storage, `postImage/${uniquePostId}.jpg`);
+      
+      await uploadBytes(storageRef, blob);
+      console.log('Uploaded a photo!');
+
+      const processedPhoto = await getDownloadURL(storageRef);
+      return processedPhoto;
+    }
+    catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  };
+
+  const uploadPostToServer = async () => {
+    const processedPhoto = await uploadPhotoToServer();    
+    try {
+		  const docRef = await addDoc(collection(db, 'posts'), {
+		    processedPhoto, 
+        name, 
+        locality, 
+        latitude, 
+        longitude, 
+        userId, 
+        displayName,
+		  });
+      console.log('Uploaded a post!');
+		} 
+    catch (error) {
+		  console.error('Error adding post: ', error);
+		}
   };
 
   useEffect(() => {
@@ -83,8 +128,10 @@ const CreatePostsScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={KeyboardHide}>
       <KeyboardAvoidingView 
-        behavior={Platform.OS == "ios" ? "padding" : "height"}>
-        <ScrollView style={styles.container}>
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView>
           <View style={styles.cameraView}>
             <Camera
               style={styles.camera}
@@ -184,9 +231,13 @@ const CreatePostsScreen = () => {
                     style={{ width: 24, height: 24 }}
                   />
                   </TouchableOpacity>
-                  {!isKeyboard && 
-                  <View style={styles.indicator}></View>
-                  }
+                {!isKeyboard && 
+                  <View style={styles.indicator}>
+                    <Image 
+                      source={require('../assets/indicator.png')}
+                    />
+                  </View>
+                }
           </SafeAreaView> 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -234,20 +285,17 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-    height: 409,
-    marginTop: 16,
-    // paddingBottom: 8,
+    paddingTop: 16,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 16,
+    height: 50,
     borderBottomWidth: 1,
     borderColor: '#E8E8E8',
   },
   input: {
-    height: 50,
-  
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
     lineHeight: 19,
@@ -281,12 +329,12 @@ const styles = StyleSheet.create({
     borderRadius: 20 
   },
   indicator: {
-    marginTop: 21,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: 134,
-    height: 5,   
-    backgroundColor: '#212121',
+    display: "flex",
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: 34,   
+    paddingBottom: 8,
   }
 });
 

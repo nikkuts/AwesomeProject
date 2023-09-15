@@ -1,34 +1,57 @@
 import {useState, useEffect} from "react";
+import { useSelector } from "react-redux";
+import { db } from "../../firebase/config";
+import { collection, doc, getDocs, onSnapshot } from 'firebase/firestore'; 
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 
 const DefaultScreenPosts = ({route, navigation}) => {
   const [posts, setPosts] = useState([]);
+  const {email, displayName} = useSelector((state) => state.auth);
+
+  const getCountComments = async (postId) => {
+    const ref = doc(db, 'posts', postId);
+    const snapshot = await getDocs(collection(ref, 'comments'));
+    return snapshot.size;
+  };
+
+  const listenToPosts = () => {
+    const postsCollection = collection(db, 'posts');
+  
+    onSnapshot(postsCollection, async (snapshot) => {
+      const updatedPosts = await Promise.all(
+        snapshot.docs.map(async (doc) => ({
+          ...doc.data(),
+          id: doc.id,
+          count: await getCountComments(doc.id),
+        }))
+      );
+      setPosts(updatedPosts);
+    });
+  };
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    listenToPosts();
+  }, []);
 
   return (
     <>
     <View style={styles.container}>
       <View style={styles.user}>
         <Image style={styles.avatar} 
-          source={require('../../assets/rectangle2.png')}
+          source={require('../../assets/middleAvatar.png')}
         />
         <View>
-          <Text style={styles.userName}>Name</Text>
-          <Text style={styles.userEmail}>email</Text>
+          <Text style={styles.userName}>{displayName}</Text>
+          <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
       <FlatList
         data={posts}
-        keyExtractor={(item, indx) => indx.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({item}) => (
           <View style={styles.photoView}>
             <Image 
-              source={{uri: item.photo}} 
+              source={{uri: item.processedPhoto}} 
               style={{ width: '100%', height: 240, borderRadius: 8,}} 
             />
             <Text style={styles.photoName}>
@@ -36,14 +59,20 @@ const DefaultScreenPosts = ({route, navigation}) => {
             </Text>
             <View style={styles.details}>
               <View style={styles.messageElem}>
-                <TouchableOpacity onPress={() => navigation.navigate('Comment')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Comment', 
+                  {
+                  postId: item.id,
+                  processedPhoto: item.processedPhoto,
+                  }
+                  )}
+                >
                 <Image
                   source={require('../../assets/message-circle.png')}
                   style={{ width: 24, height: 24 }}
                 />
                 </TouchableOpacity>
                 <Text style={styles.messageCount}>
-                  0
+                  {item.count}
                 </Text>
               </View>
               <View style={styles.mapElem}>
@@ -52,7 +81,7 @@ const DefaultScreenPosts = ({route, navigation}) => {
                   name: item.name, 
                   locality: item.locality, 
                   latitude: item.latitude, 
-                  longitude: item.longitude
+                  longitude: item.longitude,
                   }
                   )}
                 >
@@ -80,6 +109,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     backgroundColor: '#ffffff',
+    paddingBottom: 115,
   },
   user: {
     flexDirection: 'row',

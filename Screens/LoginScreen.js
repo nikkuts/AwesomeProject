@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+
+import { loginDB } from '../redux/auth/authOperations';
+
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -35,11 +41,10 @@ const LoginScreen = () => {
         email: email,
         password: password,
       };
-      console.log(state);
+      dispatch(loginDB(state));
+
       setEmail('');
       setPassword('');
-
-      navigation.navigate('Home');
     } 
     else {
       Alert.alert('Помилка', 'Введіть дійсну електронну пошту.');
@@ -70,7 +75,9 @@ const LoginScreen = () => {
           source={require("../assets/bg.png")}
         >
           <SafeAreaView style={styles.form}>  
-            <Text style={styles.title}>Увійти</Text>
+              <Text style={styles.title}>
+                Увійти
+              </Text>
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
                 onFocus={handleFocus}
@@ -96,7 +103,6 @@ const LoginScreen = () => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              <>
                 <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onLogin}>
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
@@ -113,12 +119,13 @@ const LoginScreen = () => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              </>
-              {!isKeyboard && 
-              <>
-                <View style={styles.indicator}></View>
-              </> 
-              }
+            {!isKeyboard && 
+              <View style={styles.indicator}>
+                <Image 
+                  source={require('../assets/indicator.png')}
+                />
+              </View>
+            }
           </SafeAreaView>
         </ImageBackground>
       </KeyboardAvoidingView>
@@ -144,11 +151,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: 489,
     paddingTop: 32,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
-    borderWidth: 0,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
@@ -206,6 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     marginTop: 16,
+    marginBottom: 111,
   },
   question: {
     fontFamily: 'Roboto-Regular',
@@ -214,13 +220,12 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   indicator: {
-    position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -50 }],
-    width: 134,
-    height: 5,   
-    bottom: 8,
-    backgroundColor: '#212121',
+    display: "flex",
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: 34,   
+    paddingBottom: 8,
   }
 });
 

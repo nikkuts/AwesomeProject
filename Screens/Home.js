@@ -70,7 +70,8 @@ const Home = () => {
               source={require('../assets/user.png')}
               style={{ width: 40, height: 40 }}
             />
-          )
+          ),
+          headerShown: false,
         }}
         />
       </MainTab.Navigator>

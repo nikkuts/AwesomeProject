@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, SafeAreaView, View, StyleSheet, Image, ImageBackground, TextInput, Text, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+
+import { registerDB } from '../redux/auth/authOperations';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isAvatar, setIsAvatar] = useState(false);
@@ -45,13 +51,12 @@ const RegistrationScreen = () => {
         login: login,
         email: email,
         password: password,
-      };
-      console.log(state);
+      };  
+      dispatch(registerDB(state));
+      
       setLogin('');
       setEmail('');
       setPassword('');
-    
-      navigation.navigate('Home');
     } 
     else {
       Alert.alert('Помилка', 'Введіть дійсну електронну пошту.');
@@ -92,7 +97,7 @@ useEffect(() => {
               </View>
               :
               <ImageBackground style={styles.avatar} 
-              source={require('../assets/rectangle.png')} 
+              source={require('../assets/bigAvatar.png')} 
               >
                 <TouchableOpacity style={styles.btnAvatar} onPress={onDeleteAvatar}>
                   <Image 
@@ -101,7 +106,9 @@ useEffect(() => {
                 </TouchableOpacity>
               </ImageBackground>
             }
-            <Text style={styles.title}>Реєстрація</Text>
+              <Text style={styles.title}>
+                Реєстрація
+              </Text>
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
                 onFocus={handleFocus}
@@ -136,29 +143,29 @@ useEffect(() => {
                   {!showPassword ? 'Показати' : 'Приховати'}
                 </Text>
               </TouchableOpacity>
-              <>
-                <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onRegister}>
-                  <Text style={styles.btnTitle}>Зареєструватися</Text>
-                </TouchableOpacity>
-                <View style={styles.changeScreen}>
-                  <View>
-                    <Text style={styles.question}>
-                      Вже є акаунт? 
-                    </Text>
-                  </View>
-                  <TouchableOpacity >
+              <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onRegister}>
+                <Text style={styles.btnTitle}>Зареєструватися</Text>
+              </TouchableOpacity>
+              <View style={styles.changeScreen}>
+                <View>
+                  <Text style={styles.question}>
+                    Вже є акаунт? 
+                  </Text>
+                </View>
+                <TouchableOpacity >
                     <Text onPress={() => navigation.navigate("Login")}
                       style={{...styles.question, textDecorationLine: 'underline'} }>
                       Увійти
                     </Text>
-                  </TouchableOpacity>
-                </View>
-              </> 
-              {!isKeyboard && 
-              <>
-                <View style={styles.indicator}></View>
-              </> 
-              }
+                </TouchableOpacity>
+              </View> 
+            {!isKeyboard && 
+              <View style={styles.indicator}>
+                <Image 
+                  source={require('../assets/indicator.png')}
+                />
+              </View>
+            }
           </SafeAreaView>
         </ImageBackground>
       </KeyboardAvoidingView>
@@ -183,11 +190,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: 549,
     paddingTop: 92,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
-    borderWidth: 0,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
@@ -261,6 +266,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     marginTop: 16,
+    marginBottom: 45,
   },
   question: {
     fontFamily: 'Roboto-Regular',
@@ -269,13 +275,12 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   indicator: {
-    position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -50 }],
-    width: 134,
-    height: 5,   
-    bottom: 8,
-    backgroundColor: '#212121',
+    display: "flex",
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: 34,   
+    paddingBottom: 8,
   }
 });
 
