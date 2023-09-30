@@ -32,7 +32,6 @@ const ProfileScreen = () => {
         }))
       );
       const userPosts = updatedPosts.filter(doc => doc.userId === userId);
-      console.log(userPosts);
       setPosts(userPosts);
     });
   };

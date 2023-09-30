@@ -8,12 +8,11 @@ import { authStateChange } from "../redux/auth/authOperations";
 
 import Home from '../Screens/Home';
 import RegistrationScreen from '../Screens/RegistrationScreen';
-import LoginScreen from '../Screens/LoginScreen';
-
+import LoginScreen from '../Screens/LoginScreen'; 
 const AuthStack = createStackNavigator();
 
 const Main = () => {
-    const {isAuth} = useSelector((state) => state.auth);
+    const {isAuth} = useSelector(state => state.auth);
     const dispatch = useDispatch();
 
     useEffect(() => {
