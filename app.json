@@ -17,18 +17,17 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": { 
-      "softwareKeyboardLayoutMode": "pan" 
+    "android": {
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.nikkuts.AwesomeProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "31f290f3-b02d-4bb8-bf02-5efef328c530"
+      }
     }
   }
 }
-
-// "android": {
-//   "adaptiveIcon": {
-//     "foregroundImage": "./assets/adaptive-icon.png",
-//     "backgroundColor": "#ffffff"
-//   }
-// },
